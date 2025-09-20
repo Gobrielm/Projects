@@ -11,7 +11,8 @@ app.use(cors({
 
 app.use(express.json()); // allows JSON body parsing
 
-const password = 'Ioz1zWH1V31NSP2m'
+const password = require("./config").password;
+
 const uri = `mongodb+srv://gobrielmc:${password}@cluster0.ojghum0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 async function run() {

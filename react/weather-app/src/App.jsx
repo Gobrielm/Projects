@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './styles.css';
 
-const API_KEY = '7542a5d5100247e841dceaf116975700';
+const API_KEY = require("./config").API_KEY;
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/';
 
 function UnitSelector({onChangeUnits}) {
