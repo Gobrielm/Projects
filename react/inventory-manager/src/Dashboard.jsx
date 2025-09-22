@@ -123,7 +123,7 @@ function Dashboard() {
 
   return (
     <>
-      <div>
+      <div className='DashBoard'>
         Stock
         <div className='ItemList' id="ItemList">
           {items.map((item, index) => (
