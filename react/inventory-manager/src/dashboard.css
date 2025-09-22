@@ -14,6 +14,8 @@
   overflow: auto; /* This is the key property for scrollbars */
 }
 
-.ItemEdit {
-  
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
