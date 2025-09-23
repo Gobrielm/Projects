@@ -1,23 +1,28 @@
-import sql from 'mssql'
+import sql from 'mssql/msnodesqlv8.js'
 
 const config = {
-  user: "gabri",
-  password: "",
-  server: "GABEPC\\SQLSERVER",         // or "127.0.0.1"
-  database: "TestDB",
+  server: 'GabePC\\SQLSERVER',
+  database: 'TestDB',
+  driver: 'msnodesqlv8',
   options: {
-    encrypt: false,            // set true if using Azure
-    trustServerCertificate: true // required for local dev
+    trustedConnection: true
   }
 };
 
 async function testConnection() {
   try {
     let pool = await sql.connect(config);
-    let result = await pool.request().query("SELECT * FROM Users");
+    const result = await pool.request()
+      .input('name', sql.NVarChar, 'Alice')
+      .input('email', sql.NVarChar, 'alice@example.com')
+    .query('INSERT INTO Users (name, email) VALUES (@name, @email)');
+
+
+
+    
     console.log(result.recordset);
   } catch (err) {
-    console.error("SQL error", err);
+    console.error('SQL error', err);
   }
 }
 
