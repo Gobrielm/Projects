@@ -24,6 +24,7 @@ const config = {
       userId (unique) 
       username
       passwordEnc
+      salt
   */
 };
 
@@ -47,8 +48,6 @@ async function testConnection() {
 
 testConnection();
 
-
-
 app.get('/Users', async (req, res) => {
   try {
     const { userId } = req.query;
@@ -68,20 +67,38 @@ app.get('/Users', async (req, res) => {
 });
 
 app.post('/Users', async (req, res) => {
-  const { userId, username, passwordEnc } = req.body;
+  const { userId, username, passwordEnc, salt } = req.body;
   let pool = await sql.connect();
 
   const saved = await pool.request()
     .input('userId', sql.Int, userId)
     .input('username', sql.VarChar(30), username)
     .input('passwordEnc', sql.VarChar(50), passwordEnc)
-    .query('INSERT INTO Users VALUES(@userId, @username, @passwordEnc)')
+    .input('salt', sql.VarChar(30), salt)
+    .query('INSERT INTO Users VALUES(@userId, @username, @passwordEnc, @salt)')
 
   res.json(saved);
 });
 
 app.delete('/Users', async (req, res) => {
+  const { userId, username, passwordEnc, salt } = req.body;
+  let pool = await sql.connect();
 
+  const data = await pool
+      .request()
+      .input('userId', sql.Int, userId)
+      .query('SELECT * FROM Users WHERE userId = @userId');
+    let jsoned = json(data);
+    
+    if (jsoned.username !== username || jsoned.passwordEnc !== passwordEnc || jsoned.salt !== salt) {
+      res.status(400).json({error: "Wrong username or password"});
+    } else {
+      const saved = await pool.request()
+        .input('userId', sql.Int, userId)
+        .query('DELETE FROM Users WHERE userId = @userId')
+      res.json(saved);
+    }
+    
 })
 
 // Start Express server
