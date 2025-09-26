@@ -1,42 +1,38 @@
 #include <vector>
 #include <unordered_map>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
 class Solution {
+
 public:
     int triangleNumber(vector<int>& nums) {
-        unordered_map<int, int> m;
-        for (const auto& num: nums) {
-            m[num]++;
-        }
+        if (nums.size() < 3) return 0;
+        // a + b < c, b + c < a, c + a < b, if sorted, a < b, and b < c
+        /*
+            Chooses 1 side to start, finds a range where nums[l] is the smallest leg possible, and nums[r] is the biggest possible
+            Treats nums[r] as 2nd iterator-ish
         
+        */
 
-        int total = 0;
+
+        sort(nums.begin(), nums.end());
         const auto& n = nums.size();
-        for (int i = 0; i < n; i++) {
-            int x = nums[i];
+        int count = 0;
+        for (int i = (n - 1); i >= 2; i--) {
+            int l = 0, r = i - 1;
 
-            m[x]--;
-
-            for (int j = i + 1; j < n; j++) {
-                int y = nums[j];
-
-                double z = sqrt(pow(i, 2) + pow(j, 2));
-                int needed_amount = (int)floor(z) == y? 2: 1;
-
-                if (floor(z) == z && m[(int) z] >= needed_amount) {
-                    total += m[(int) z] - needed_amount + 1;
+            while (l != r) {
+                if (nums[l] + nums[r] > nums[i]) {
+                    count += (r - l);
+                    r--;
+                } else {
+                    l++;
                 }
             }
         }
-        return total;
+        return count;
     }
 };
-
-int main() {
-    Solution sol;
-    vector<int> v = {2,2,3,4};
-    sol.triangleNumber(v);
-}
