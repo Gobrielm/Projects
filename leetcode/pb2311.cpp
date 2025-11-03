@@ -13,14 +13,13 @@ class Solution {
         int L = -1;
         int R = -1;
 
+
         int currentSum = 0;
         vector<int> v;
-        string subseq = "";
 
         while (L < n - 1 && R < n - 1) {
 
             L++;
-            subseq = subseq + s[L];
             currentSum *= 2;
             if (s[L] != '0') {
                 currentSum++;
@@ -28,19 +27,15 @@ class Solution {
 
             while (currentSum > k && R < n - 1) {
                 R++;
-                if (subseq[R] == '1') {
-                    currentSum -= pow(2, subseq.size() - 1 - R);
+                if (s[R] == '1') {
+                    currentSum -= pow(2, L - R);
                     v.push_back(R);
                 }
                 
             }
         }
 
-        return subseq.size() - v.size();
+        return L + 1 - v.size();
     }
 };
 
-int main() {
-    Solution sol;
-    cout << sol.longestSubsequence("1001010", 5);
-}
