@@ -4,7 +4,8 @@ import cors from 'cors';
 
 const app = express();
 
-const { API_KEY, password } = import("./api_keys/config.cjs");
+const { API_KEY } = import("./api_keys/config.cjs");
+const password = encodeURIComponent(import("./api_keys/config.cjs"))
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/';
 
 app.use(cors({
@@ -13,7 +14,7 @@ app.use(cors({
 
 app.use(express.json());
 
-const uri = `mongodb+srv://gobrielmc:${password}@cluster0.ojghum0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://gobrielmc:${password}@cluster0.ojghum0.mongodb.net/?appName=Cluster0`;
 
 async function run() {
   try {
