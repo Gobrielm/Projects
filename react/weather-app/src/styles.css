@@ -1,0 +1,7 @@
+/* By class */
+.WeatherHomePage {
+  width: 300px;       /* or any fixed width */
+  margin: 0 auto;     /* top/bottom = 0, left/right = auto */
+  background-color: lightblue;
+  padding: 20px;
+}
