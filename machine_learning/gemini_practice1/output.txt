@@ -1,0 +1,49 @@
+Yes, there are a few bugs and potential issues:
+
+1.  **Invalid Model Name**: `gemini-3-flash-preview` does not exist. Use `gemini-2.0-flash` or `gemini-1.5-flash`.
+2.  **File Encoding**: When opening the input file (`f = io.open(fileName)`), you didn't specify an encoding. If the file contains special characters (UTF-8) and you are on Windows, it may crash. Use `encoding="utf-8"`.
+3.  **Resource Management**: You are manually closing files. It is safer to use `with` statements to ensure files close even if an error occurs.
+4.  **System Instruction Placement**: In the new `google-genai` SDK, `system_instruction` is typically passed as a string directly in the `config` dictionary or as a `types.GenerateContentConfig` object.
+
+### Corrected Code:
+
+```python
+from dotenv import load_dotenv
+from google import genai
+import os
+
+load_dotenv()
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+def main():
+    fileName = input("Enter File To Interpret: ")
+    try:
+        with open(fileName, "r", encoding="utf-8") as f:
+            data = f.read()
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return
+
+    instruction = input("Enter Command for Gemini: ")
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.0-flash", # Updated model name
+            contents=[instruction, data],
+            config={
+                "system_instruction": "You are a professional data analyst. Be concise.",
+                "temperature": 0.3
+            }
+        )
+
+        with open("output.txt", "w", encoding="utf-8") as fOut:
+            fOut.write(response.text)
+        print("Analysis saved to output.txt")
+        
+    except Exception as e:
+        print(f"API Error: {e}")
+
+if __name__ == "__main__":
+    main()
+```
